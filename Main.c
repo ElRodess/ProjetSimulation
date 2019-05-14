@@ -1,9 +1,11 @@
 #include "stdio.h"
 #include "stdlib.h"
+#include <string.h>
 #include "Scenario2.h"
 #include "Var.h"
 
-int Lectures_Lambdas(double* Lambdas)
+int* Lambdas;
+int Lectures_Lambdas()
 {
 	FILE* f = fopen("./lambda.txt","r");
 	if(f != NULL)
@@ -15,12 +17,8 @@ int Lectures_Lambdas(double* Lambdas)
 	Lambdas = malloc(nombre * sizeof(int));
 	for(int i = 0;i<nombre;i++)
 	{
-		fscanf(f,"%d",&tmp);
-		printf("tmp : %d \n",tmp);
-		Lambdas[i] = tmp;
+		fscanf(f,"%d",&Lambdas[i]);
 		printf("Lambdas[%d] = %d \n",i,Lambdas[i]);
-		//~ ok =  1+Lambdas[i];
-		//~ printf("%d \n", ok);
 	}
 	fclose(f);
 	return nombre;
@@ -41,15 +39,24 @@ int main(int argc, char **argv)
 		return 0;	
 	}
 	*/
-	double* Lambdas;
-	int nombre = Lectures_Lambdas(Lambdas);
+	
+	int nombre = Lectures_Lambdas();
 	if(nombre ==-1)
 	{
 		printf("ERREUR lambda.txt \n");
 		return 0;
 	}
-	LAMBDA = 50;
-	printf("lambda = %d \n",LAMBDA);
+	char S2[32] = "MM1_";
+	char* data =".data";
+	for(int i = 0;i<nombre;i++)
+	{
+		sprintf(S2,"%s%d",S2,i);
+		sprintf(S2,"%s%s",S2,data);
+		printf("%s \n",S2);
+		LAMBDA = Lambdas[i];
+		MM1(S2);
+		sprintf(S2,"MM1_");
+	}
 	
 	// on libere la memoire
 	free(Lambdas);

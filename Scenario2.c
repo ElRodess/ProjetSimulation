@@ -7,7 +7,7 @@
 #include "Scenario2.h"
 #include "Var.h"
 
-#define Lambda LAMBDA/10 // L < M 
+double Lambda = 0; // L < M 
 
 	//cond d'arret
 
@@ -176,7 +176,14 @@ void Simulateur(FILE* f1)
 
 int MM1(char* fichier)
 {
+	temps = 0;
+	n = 0;	
+	compteur = 0;	
+	cumule = 0;
+	Lambda = LAMBDA/10;
+	printf("Lambda = %f \n",Lambda);
 	FILE *f1 = fopen(fichier,"w");
+	printf("flag1 \n");
 	srandom(time(NULL)+getpid());
 	Simulateur(f1);
 	fclose(f1);

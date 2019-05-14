@@ -24,3 +24,4 @@ clean:
 
 mrpropre: clean
 	rm -rf Main
+	rm -rf *.data
