@@ -274,7 +274,7 @@ void Simulateur(FILE* f1)
 	//printf("Ouverture...");
 	//printf("OK \n");
 	//printf("ecriture...");
-	fprintf(f1,"%lf   %lf   %lf \n",Lambda,Tmoyen,get90);
+	fprintf(f1,"%lf %lf %lf\n",Lambda,Tmoyen,get90);
 	//printf("OK \n");
 	
 }
