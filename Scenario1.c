@@ -21,10 +21,9 @@ int n = 0;
 int Nentrees = 0;		//nb de clients dans la file a l'instant temps
 int compteur = 0;	//cond d'arret 2
 double cumule = 0;
-int File[10];
 
 typedef struct Event {
-	int type; //0 pour arrive 1 pour S1 µ... 10 pour S10
+	int type; //0 pour arrive 1 pour sortie
 	double date;
 	int etat; //0 pour non traité 1 pour non traité
 }event;
@@ -64,17 +63,6 @@ void Init_Ech(){
 	Ajouter_Ech(e);
 }
 
-int Sum_Attente_file()
-{
-	int sum = 0;
-	for(int i =0;i<10;i++)
-	{
-		if(File[i] >1)
-			sum += File[i] -1;
-	}
-	return sum;
-}
-
 void Arrive_Event(event e) {
 	//printf("execution Arrivé Client\n");
 	event e1;
@@ -82,34 +70,33 @@ void Arrive_Event(event e) {
 	e1.date = e.date + Exponnentielle(Lambda);
 	e1.etat = 0;	
 	Ajouter_Ech(e1);
-	int alea = rand()%10;
-	Nentrees++;	
-	File[alea]++;
-	if( File[alea] == 1)
-	{
+	n++;
+	Nentrees++;			
+	if (n == 1) {
 		event e2;
-		e2.type = alea + 1; // indice de 0 à 10 mais type de 1 à 11 
+		e2.type = 1;
 		e2.date = e.date + Exponnentielle(Mu);
 		e2.etat = 0;		
 		Ajouter_Ech(e2);
-	}		
+	}	
 	temps = e.date;
 }
 
 void Service_Event(event e)	//service = Mu
 {
-	int ind = e.type -1;
-	if(File[ind] > 0)
-	{
-		File[ind]--;
-		if(File[ind] >0)
+	if (n>0) {
+		n--;
+		if( n>0)
 		{
 			event e1;
-			e1.type = e.type;
-			e1.date = e.date + Exponnentielle(Mu);
+			e1.type = 1;
+			if(n >= 10)
+				e1.date = e.date + Exponnentielle(Mu * 10);
+			else 
+				e1.date = e.date + Exponnentielle(Mu * n);
 			e1.etat = 0;
 			Ajouter_Ech(e1);
-		}
+		}	
 		temps = e.date;	
 	}
 }
@@ -149,7 +136,7 @@ void affiche_echeancier()
 			printf(" (AC,%f,%d),",e.date,e.etat);
 	}
 		if(e.type == 1){
-			printf("(FS,%lf,%d),",e.date,e.etat);
+			printf(" (FS,%lf,%d),",e.date,e.etat);
 	}
 		}
 		printf("] \n \n ");
@@ -216,22 +203,16 @@ void Simulateur(FILE* f1)
 	double Tmoyen =0 ;
 	event e ;
 	int k = 0;
-	for(int i =0;i<10;i++)
-	{
-		File[i] =0;
-	}
 	Init_Ech();
-	int Serv = 0;
+	
 	while((condition_arret(OldNmoyen,Tmoyen) == 0 && k <10000))//   //arret > 0
 	{
 		//printf("flag 1 \n");	
 		e = Extraire();	
-		n= Sum_Attente_file();
-		//printf("n = %d \n",n);
-		if(n>0)
+		if(n>10)
 		{
-			cumule += (e.date-temps)*(n);
-			Buffer[k] = (e.date-temps)*(n);
+			cumule += (e.date-temps)*(n-10);
+			Buffer[k] = (e.date-temps)*(n-10);
 			OldNmoyen = Tmoyen;
 			Tmoyen = cumule/Nentrees;
 			Tmoyen = Tmoyen; //moyenne 
@@ -252,7 +233,7 @@ void Simulateur(FILE* f1)
 		
 		if(e.type == 0)
 			Arrive_Event(e);
-		if(e.type >= 1)
+		if(e.type ==1)
 			Service_Event(e);
 	}
 	//printf("flag1 \n");
@@ -266,7 +247,7 @@ void Simulateur(FILE* f1)
 	
 }
 
-int MMsplit10(char* fichier,double LAMBDA)
+int MM10(char* fichier,double LAMBDA)
 {
 	init_buffer();
 	NbVal = 0;
@@ -323,11 +304,11 @@ int main(int argc, char **argv)
 		printf("ERREUR lambda.txt \n");
 		return 0;
 	}
-	char* F2 = "Scenario2bis.data";
-	remove(F2);
+	char* F1 = "Scenario1.data";
+	remove(F1);
 	for(int i = 0;i<nombre;i++)
 	{
-		MMsplit10(F2,Lambdas[i]);
+		MM10(F1,Lambdas[i]);
 	}
 	// on libere la memoire
 	free(Lambdas);

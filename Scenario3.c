@@ -75,6 +75,19 @@ int Sum_Attente_file()
 	return sum;
 }
 
+int File_Min() // renvoi la file de taille minimum en cas d'egalité, la file de plus petit indice
+{
+	int min = 0;
+	for(int i =0;i<10;i++)
+	{
+		if(File[i] < File[min])
+		{
+			min = i;
+		}
+	}
+	return min;
+}
+
 void Arrive_Event(event e) {
 	//printf("execution Arrivé Client\n");
 	event e1;
@@ -82,13 +95,13 @@ void Arrive_Event(event e) {
 	e1.date = e.date + Exponnentielle(Lambda);
 	e1.etat = 0;	
 	Ajouter_Ech(e1);
-	int alea = rand()%10;
+	int min = File_Min();
 	Nentrees++;	
-	File[alea]++;
-	if( File[alea] == 1)
+	File[min]++;
+	if( File[min] == 1)
 	{
 		event e2;
-		e2.type = alea + 1; // indice de 0 à 10 mais type de 1 à 11 
+		e2.type = min + 1; // indice de 0 à 10 mais type de 1 à 11 
 		e2.date = e.date + Exponnentielle(Mu);
 		e2.etat = 0;		
 		Ajouter_Ech(e2);
@@ -323,11 +336,11 @@ int main(int argc, char **argv)
 		printf("ERREUR lambda.txt \n");
 		return 0;
 	}
-	char* F2 = "Scenario2bis.data";
-	remove(F2);
+	char* F3 = "Scenario3.data";
+	remove(F3);
 	for(int i = 0;i<nombre;i++)
 	{
-		MMsplit10(F2,Lambdas[i]);
+		MMsplit10(F3,Lambdas[i]);
 	}
 	// on libere la memoire
 	free(Lambdas);
