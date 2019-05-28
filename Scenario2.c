@@ -323,7 +323,7 @@ int main(int argc, char **argv)
 		printf("ERREUR lambda.txt \n");
 		return 0;
 	}
-	char* F2 = "Scenario2bis.data";
+	char* F2 = "Scenario2.data";
 	remove(F2);
 	for(int i = 0;i<nombre;i++)
 	{
