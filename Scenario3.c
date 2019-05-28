@@ -312,7 +312,7 @@ int Lectures_Lambdas(char* fichier)
 	double tmp = 0;
 	fscanf(f,"%d",&nombre);
 	printf("%d \n",nombre);
-	Lambdas = malloc(nombre * sizeof(int));
+	Lambdas = malloc(nombre * sizeof(double));
 	for(int i = 0;i<nombre;i++)
 	{
 		fscanf(f,"%lf",&Lambdas[i]);
